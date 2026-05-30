@@ -108,12 +108,12 @@ lab1/
 
 ```mermaid
 graph LR
-    A[Cron<br/>каждую минуту] --> B[weather.sh]
-    B --> C[curl к wttr.in API]
-    C --> D[jq парсит JSON]
-    D --> E[Генерация HTML]
-    E --> F[/var/www/html/index.html]
-    F --> G[nginx раздает<br/>http://localhost/]
+    A[Cron] --> B[weather.sh]
+    B --> C[wttr.in API]
+    C --> D[jq parser]
+    D --> E[HTML generator]
+    E --> F[index.html]
+    F --> G[nginx server]
 ```
 
 ### Компоненты системы
