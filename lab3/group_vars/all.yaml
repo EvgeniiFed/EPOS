@@ -1,0 +1,20 @@
+---
+# Путь к файлу со списком целей
+targets_file: "/home/{{ ansible_user }}/targets/targets.txt"
+
+# Параметры nmap
+nmap_package: nmap
+nmap_port: "80"
+nmap_timing: "-T4"          # Агрессивность сканирования (0-5)
+nmap_options: "-Pn"         # Не пинговать хост (пропускать фаерволы)
+
+# Таймауты
+nmap_timeout: 30            # секунд на хост
+scan_delay: 1               # задержка между запросами в цикле
+
+# Сбор результатов
+collect_results: true
+results_directory: "/tmp/nmap_results"
+
+# Вывод
+verbose_output: true

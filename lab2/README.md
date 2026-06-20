@@ -106,11 +106,6 @@ ssh-copy-id user@target-host
 ansible-playbook -i inventory/hosts.ini playbooks/nginx.yaml --syntax-check
 ```
 
-### Предварительный запуск плейбука в режиме dry-run для отладки
-```bash
-ansible-playbook -i inventory/hosts.ini playbooks/nginx.yaml --dry-run
-```
-
 ### Сбор фактов вручную
 ```bash
 ansible all -i inventory/hosts.ini -m setup --limit web1

@@ -1,0 +1,114 @@
+---
+- name: "Сканирование сети через NMAP с использованием переменных и циклов"
+  hosts: web
+  become: true
+  gather_facts: true
+
+  vars:
+    scan_timestamp: "{{ ansible_date_time.iso8601_basic_short }}"
+    targets_file: "/tmp/targets.txt"
+    results_directory: "/tmp/nmap_results"
+    results_file: "{{ results_directory }}/scan_{{ inventory_hostname }}_{{ scan_timestamp }}.log"
+    nmap_port: "80"
+    nmap_timing: "-T4"
+    nmap_options: "-Pn"
+    nmap_timeout: 15
+    verbose_output: true
+
+  tasks:
+    - name: "Установка пакета NMAP"
+      package:
+        name: nmap
+        state: present
+      tags: [install]
+
+    - name: "Создание директории для результатов"
+      file:
+        path: "{{ results_directory }}"
+        state: directory
+        mode: '0755'
+      tags: [setup]
+
+    - name: "Копирование файла целей на удалённый хост"
+      copy:
+        src: "{{ playbook_dir }}/../targets/targets.txt"
+        dest: "{{ targets_file }}"
+        mode: '0644'
+      tags: [setup, targets]
+
+    - name: "Чтение и парсинг файла целей"
+      slurp:
+        src: "{{ targets_file }}"
+      register: targets_raw
+      tags: [parse]
+
+    - name: "Преобразование целей в список переменных"
+      set_fact:
+        target_list: >-
+          {{
+            (targets_raw.content | b64decode | split('\n'))
+            | map('trim')
+            | select('match', '^(?!#|^$)')
+            | list
+          }}
+      tags: [parse]
+
+    - name: "Отображение найденных целей (отладка)"
+      debug:
+        msg: "Найдено целей: {{ target_list | length }} | Список: {{ target_list }}"
+      when: verbose_output
+      tags: [debug]
+
+    - name: "Сканирование каждой цели через NMAP (порт {{ nmap_port }})"
+      command: >
+        nmap {{ nmap_timing }} {{ nmap_options }} -p {{ nmap_port }} --connect-timeout {{ nmap_timeout }} {{ item }}
+      register: scan_results
+      loop: "{{ target_list }}"
+      loop_control:
+        label: "{{ item }}"
+        pause: 1
+      ignore_errors: true
+      tags: [scan]
+
+    - name: "Вывод сводки результатов сканирования"
+      debug:
+        msg: |
+          🔍 Цель: {{ item.item }}
+          ├─ Код возврата: {{ item.rc }}
+          ├─ Статус порта: {% if 'open' in item.stdout %}🟢 ОТКРЫТ{% elif 'closed' in item.stdout %}🔴 ЗАКРЫТ{% elif 'filtered' in item.stdout %}🟡 ФИЛЬТРУЕТСЯ{% else %}⚪ НЕ ОПРЕДЕЛЕНО{% endif %}
+          └─ Время выполнения: {{ item.end | default('N/A') }}
+      loop: "{{ scan_results.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+      when: verbose_output
+      tags: [output]
+
+    - name: "Сохранение детальных результатов в файл"
+      copy:
+        content: |
+          # NMAP Scan Report
+          # Host: {{ inventory_hostname }}
+          # Time: {{ scan_timestamp }}
+          {% for r in scan_results.results %}
+          ---
+          Target: {{ r.item }}
+          RC: {{ r.rc }}
+          Output:
+          {{ r.stdout | indent(2) }}
+          {% endfor %}
+        dest: "{{ results_file }}"
+        mode: '0644'
+      tags: [save]
+
+    - name: "Вывод итогового отчёта"
+      debug:
+        msg: |
+          ═══════════════════════════════════════
+          📊 СКАНИРОВАНИЕ ЗАВЕРШЕНО НА ХОСТЕ: {{ inventory_hostname }}
+          ═══════════════════════════════════════
+          Цель обработано: {{ target_list | length }}
+          Успешно: {{ scan_results.results | selectattr('rc', 'equalto', 0) | list | length }}
+          С ошибками: {{ scan_results.results | selectattr('rc', 'ne', 0) | list | length }}
+          Лог сохранён: {{ results_file }}
+          ═══════════════════════════════════════
+      tags: [summary]

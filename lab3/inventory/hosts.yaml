@@ -1,0 +1,14 @@
+---
+all:
+  children:
+    web:
+      hosts:
+        web1:
+          ansible_host: 192.168.255.201
+          ansible_user: ubuntu
+        web2:
+          ansible_host: 192.168.255.202
+          ansible_user: ubuntu
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+        nginx_document_root: /var/www/html
