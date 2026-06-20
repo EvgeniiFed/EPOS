@@ -1,4 +1,3 @@
-```markdown
 # Ansible + Nginx Deployment
 
 Автоматическое развёртывание nginx с кастомной страницей через Ansible.
