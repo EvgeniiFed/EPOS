@@ -1,0 +1,33 @@
+- name: "Развёртывание виртуальных хостов nginx через роль"
+  hosts: web
+  become: true
+  gather_facts: true
+  
+  vars:
+    vhosts_list:
+      - name: site1
+        domain: site1.local
+        description: "Основной сайт"
+        
+      - name: blog
+        domain: blog.local
+        description: "Блог компании"
+        
+      - name: api
+        domain: api.local
+        description: "API endpoint"
+
+    nginx_root: /var/www
+    nginx_log_dir: /var/log/nginx
+    nginx_owner: www-data
+    nginx_group: www-data
+
+  tasks:
+    - name: "Применить роль vhost для каждого сайта"
+      include_role:
+        name: vhost
+      loop: "{{ vhosts_list }}"
+      loop_control:
+        loop_var: vhost
+        label: "{{ vhost.name }}"
+      tags: [deploy]

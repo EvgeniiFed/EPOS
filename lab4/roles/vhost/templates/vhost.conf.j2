@@ -1,0 +1,34 @@
+# {{ ansible_managed }}
+# Vhost: {{ vhost.name }} | Domain: {{ vhost.domain }}
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{ vhost.domain }} www.{{ vhost.domain }};
+
+    root {{ nginx_root }}/{{ vhost.name }};
+    index index.html index.htm;
+
+    access_log {{ nginx_log_dir }}/{{ vhost.name }}_access.log;
+    error_log {{ nginx_log_dir }}/{{ vhost.name }}_error.log;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    {% if vhost.proxy_pass is defined %}
+    location /api/ {
+        proxy_pass {{ vhost.proxy_pass }};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+    {% endif %}
+
+    location ~ /\. {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+}

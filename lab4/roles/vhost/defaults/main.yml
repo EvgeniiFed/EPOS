@@ -1,0 +1,14 @@
+---
+nginx_package: nginx
+nginx_service: nginx
+nginx_config_dir: /etc/nginx
+nginx_sites_available: "{{ nginx_config_dir }}/sites-available"
+nginx_sites_enabled: "{{ nginx_config_dir }}/sites-enabled"
+nginx_root: /var/www
+nginx_log_dir: /var/log/nginx
+nginx_owner: www-data
+nginx_group: www-data
+
+vhost_template: "vhost.conf.j2"
+index_template: "index.html.j2"
+vhost_enable: true

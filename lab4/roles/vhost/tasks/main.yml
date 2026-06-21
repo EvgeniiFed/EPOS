@@ -1,0 +1,66 @@
+---
+- name: "Установка пакета nginx"
+  package:
+    name: "{{ nginx_package }}"
+    state: present
+  run_once: true
+  tags: [install, nginx]
+
+- name: "Отключить дефолтный сайт nginx"
+  file:
+    path: "{{ nginx_sites_enabled }}/default"
+    state: absent
+  notify: "Перезагрузить nginx"
+  tags: [setup, cleanup]
+
+- name: "Создать директории для vhost и конфигураций"
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ nginx_sites_available }}"
+    - "{{ nginx_sites_enabled }}"
+    - "{{ nginx_root }}/{{ vhost.name }}"
+  tags: [setup, dirs]
+
+- name: "Развернуть индексную страницу"
+  template:
+    src: "index.html.j2"
+    dest: "{{ nginx_root }}/{{ vhost.name }}/index.html"
+    mode: '0644'
+    owner: "{{ nginx_owner }}"
+    group: "{{ nginx_group }}"
+  notify: "Перезагрузить nginx"
+  tags: [deploy, content]
+
+- name: "Развернуть конфигурацию виртуального хоста"
+  template:
+    src: "vhost.conf.j2"
+    dest: "{{ nginx_sites_available }}/{{ vhost.name }}.conf"
+    mode: '0644'
+    owner: root
+    group: root
+  notify: "Перезагрузить nginx"
+  tags: [deploy, config]
+
+- name: "Активировать vhost (создать symlink в sites-enabled)"
+  file:
+    src: "{{ nginx_sites_available }}/{{ vhost.name }}.conf"
+    dest: "{{ nginx_sites_enabled }}/{{ vhost.name }}.conf"
+    state: link
+  when: vhost_enable | bool
+  notify: "Перезагрузить nginx"
+  tags: [deploy, enable]
+
+- name: "Проверка синтаксиса конфигурации nginx"
+  command: nginx -t
+  register: nginx_test
+  changed_when: false
+  failed_when: nginx_test.rc != 0
+  tags: [verify]
+
+- name: "Вывод информации о развернутом vhost"
+  debug:
+    msg: "vhost '{{ vhost.name }}' активен: http://{{ vhost.domain }} → {{ nginx_root }}/{{ vhost.name }}"
+  tags: [output]

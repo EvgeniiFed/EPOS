@@ -1,0 +1,6 @@
+---
+- name: "Перезагрузить nginx"
+  systemd:
+    name: "{{ nginx_service }}"
+    state: reloaded
+  listen: "Перезагрузить nginx"

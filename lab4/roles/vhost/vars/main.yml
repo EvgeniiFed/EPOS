@@ -1,0 +1,4 @@
+---
+_required_packages:
+  - nginx
+  - curl
