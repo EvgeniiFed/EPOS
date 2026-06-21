@@ -130,37 +130,37 @@ TASK [Gathering Facts] *********************************************************
 ok: [web1]
 ok: [web2]
 
-TASK [nginx_vhost : Установка пакета nginx] ************************************
+TASK [vhost : Установка пакета nginx] ******************************************
 ok: [web1]
 
-TASK [nginx_vhost : Отключить дефолтный сайт nginx] ****************************
+TASK [vhost : Отключить дефолтный сайт nginx] **********************************
 changed: [web1]
 
-TASK [nginx_vhost : Создать директории для vhost и конфигураций] ***************
+TASK [vhost : Создать директории для vhost и конфигураций] *********************
 changed: [web1] => (item=/etc/nginx/sites-available)
 changed: [web1] => (item=/etc/nginx/sites-enabled)
 changed: [web1] => (item=/var/www/site1)
 changed: [web1] => (item=/var/www/blog)
 
-TASK [nginx_vhost : Развернуть индексную страницу] *****************************
+TASK [vhost : Развернуть индексную страницу] ***********************************
 changed: [web1] => (item={'name': 'site1', 'domain': 'site1.local'})
 changed: [web1] => (item={'name': 'blog', 'domain': 'blog.local'})
 
-TASK [nginx_vhost : Развернуть конфигурацию виртуального хоста] ****************
+TASK [vhost : Развернуть конфигурацию виртуального хоста] **********************
 changed: [web1] => (item={'name': 'site1', 'domain': 'site1.local'})
 changed: [web1] => (item={'name': 'blog', 'domain': 'blog.local'})
 
-TASK [nginx_vhost : Активировать vhost (создать symlink в sites-enabled)] ******
+TASK [vhost : Активировать vhost (создать symlink в sites-enabled)] ************
 changed: [web1] => (item={'name': 'site1', 'domain': 'site1.local'})
 changed: [web1] => (item={'name': 'blog', 'domain': 'blog.local'})
 
-TASK [nginx_vhost : Проверка синтаксиса конфигурации nginx] ********************
+TASK [vhost : Проверка синтаксиса конфигурации nginx] **************************
 ok: [web1]
 
-RUNNING HANDLER [nginx_vhost : Перезагрузить nginx] ****************************
+RUNNING HANDLER [vhost : Перезагрузить nginx] **********************************
 changed: [web1]
 
-TASK [nginx_vhost : Вывод информации о развернутом vhost] **********************
+TASK [vhost : Вывод информации о развернутом vhost] ****************************
 ok: [web1] => (item={'name': 'site1', 'domain': 'site1.local'}) => {
     "msg": "vhost 'site1' активен: http://site1.local → /var/www/site1"
 }
