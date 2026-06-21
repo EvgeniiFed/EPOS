@@ -36,4 +36,3 @@
    - Перейдите в *Dashboards -> New Dashboard -> Add visualization*.
    - Выберите источник данных **Prometheus**.
    - Введите запрос: `rate(flask_http_request_total[1m])` и нажмите Run, чтобы увидеть график запросов.
-```
