@@ -79,7 +79,7 @@ git clone <repo-url>
 cd lab4
 ```
 
-### 2️⃣ Инвентарь `inventory/hosts.yml` (ваш)
+### 2️⃣ Инвентарь `inventory/hosts.yml`
 ```yaml
 ---
 all:
