@@ -161,7 +161,7 @@ kubectl diff -k k8s/overlays/dev/
 kubectl delete -k k8s/overlays/dev/
 ```
 
-## ✅ Шаг 5. Проверка локально
+## Проверка локально
 
 ```bash
 # 1. Просмотри, что сгенерирует Kustomize для dev
