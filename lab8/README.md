@@ -160,9 +160,6 @@ kubectl diff -k k8s/overlays/dev/
 # Удаление
 kubectl delete -k k8s/overlays/dev/
 ```
-```
-
----
 
 ## ✅ Шаг 5. Проверка локально
 
