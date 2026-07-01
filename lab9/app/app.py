@@ -41,4 +41,8 @@ def version():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+<<<<<<< HEAD
 # test ci
+=======
+# CD test
+>>>>>>> 1787323 (Trigger CD pipeline)
