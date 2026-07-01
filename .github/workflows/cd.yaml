@@ -8,7 +8,7 @@ on:
       - 'lab9/k8s/**'
 
 env:
-  DOCKER_IMAGE: evgeniifed/flask-app
+  DOCKER_IMAGE: devops9292/flask-app
 
 jobs:
   build-and-push:
