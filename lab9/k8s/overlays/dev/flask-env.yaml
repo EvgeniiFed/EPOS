@@ -15,4 +15,4 @@ spec:
         - name: REDIS_HOST
           value: "dev-redis-service"
         - name: APP_VERSION
-          value: "dev-v1.0.0"
+          value: "dev-v2.0.0"
