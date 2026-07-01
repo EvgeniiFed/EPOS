@@ -36,7 +36,7 @@ def health():
 
 @app.route('/version')
 def version():
-    app_version = os.getenv('APP_VERSION', 'v1.0.0')
+    app_version = os.getenv('APP_VERSION', 'v2.0.0')
     return f'Version: {app_version}\n', 200
 
 if __name__ == "__main__":
