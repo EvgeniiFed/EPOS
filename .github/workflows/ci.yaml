@@ -31,8 +31,8 @@ jobs:
         with:
           python-version: '3.9'
       - run: |
-          pip install -r app/requirements.txt
-          pip install -r tests/requirements.txt
+          pip install -r lab9/app/requirements.txt
+          pip install -r lab9/tests/requirements.txt
       - run: pytest lab9/tests/ -v --cov=app --cov-report=term-missing
 
   build-test:
