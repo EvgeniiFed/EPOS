@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask
+spec:
+  template:
+    spec:
+      containers:
+      - name: flask
+        env:
+        - name: SERVER_NAME
+          value: "dev-server"
+        - name: ENV
+          value: "development"
+        - name: REDIS_HOST
+          value: "dev-redis-service"
+        - name: APP_VERSION
+          value: "dev-v1.0.0"

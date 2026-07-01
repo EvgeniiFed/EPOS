@@ -1,0 +1,4 @@
+flask==2.3.2
+werkzeug==2.3.7
+redis==4.6.0
+prometheus_flask_exporter==0.22.4
